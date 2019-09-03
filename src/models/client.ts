@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import { existsSync, readFileSync, writeFileSync } from 'fs';
+import { existsSync, readFileSync, writeFileSync, ReadStream } from 'fs';
 import fbLogin from 'facebook-chat-api';
 
 import { ICredentials, IMessage, IOptions } from '../interfaces';
@@ -84,6 +84,15 @@ export class Client extends EventEmitter {
   public changeBlockedStatus(userId: string, block: boolean): Promise<void> {
     return new Promise((resolve, reject) => {
       this._api.changeBlockedStatus(userId, block, err => {
+        if (err) reject(err);
+        resolve();
+      });
+    });
+  }
+
+  public changeGroupImage(stream: ReadStream, threadId: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this._api.changeGroupImage(stream, threadId, err => {
         if (err) reject(err);
         resolve();
       });
