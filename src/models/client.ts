@@ -99,6 +99,81 @@ export class Client extends EventEmitter {
     });
   }
 
+  public changeNickname(nickname: string, threadId: string, participantId: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this._api.changeNickname(nickname, threadId, participantId, err => {
+        if (err) reject(err);
+        resolve();
+      });
+    });
+  }
+
+  public changeThreadColor(color: string, threadId: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this._api.changeThreadColor(color, threadId, err => {
+        if (err) reject(err);
+        resolve();
+      });
+    });
+  }
+
+  public changeThreadEmoji(emoji: string, threadId: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this._api.changeThreadEmoji(emoji, threadId, err => {
+        if (err) reject(err);
+        resolve();
+      });
+    });
+  }
+
+  public createPoll(title: string, threadId: string, options?: { [key: string]: boolean }): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this._api.createPoll(title, threadId, options, err => {
+        if (err) reject(err);
+        resolve();
+      });
+    });
+  }
+
+  public deleteMessage(message: string | string[]): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this._api.deleteMessage(message, err => {
+        if (err) reject(err);
+        resolve();
+      });
+    });
+  }
+
+  public deleteThread(thread: string | string[]): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this._api.deleteThread(thread, err => {
+        if (err) reject(err);
+        resolve();
+      });
+    });
+  }
+
+  public forwardAttachment(attachmentId: string, user: string | string[]): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this._api.forwardAttachment(attachmentId, user, err => {
+        if (err) reject(err);
+        resolve();
+      });
+    });
+  }
+
+  public getAppState(): any[] {
+    return this._api.getAppState();
+  }
+
+  public getCurrentUserID(): string {
+    return this._api.getCurrentUserID();
+  }
+
+  public getEmojiUrl(emoji: string, size: 32 | 64 | 128, pixelRatio: 1 | 1.5): string {
+    return this._api.getEmojiUrl(emoji, size, pixelRatio);
+  }
+
   private _onMessage = (err: Error, message: IMessage) => {
     if (err) return console.error(err);
     this.emit('message', message);
