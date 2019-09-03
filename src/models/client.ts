@@ -81,6 +81,15 @@ export class Client extends EventEmitter {
     });
   }
 
+  public changeBlockedStatus(userId: string, block: boolean): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this._api.changeBlockedStatus(userId, block, err => {
+        if (err) reject(err);
+        resolve();
+      });
+    });
+  }
+
   private _onMessage = (err: Error, message: IMessage) => {
     if (err) return console.error(err);
     this.emit('message', message);
