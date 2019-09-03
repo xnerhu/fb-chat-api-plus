@@ -1,6 +1,6 @@
 export interface ICredentials {
   email?: string;
   password?: string;
-  appState?: any;
+  appState?: Buffer;
   appStatePath?: string;
 }

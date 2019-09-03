@@ -1,0 +1,47 @@
+export type IAttachmentType = 'sticker' | 'file' | 'photo' | 'animated_image' | 'video' | 'audio' | 'share';
+
+export interface IAttachment {
+  type?: IAttachmentType;
+  ID?: string;
+  stickerID?: string;
+  packID?: string;
+  title?: string;
+  description?: string;
+  filename?: string;
+  url?: string;
+  isMalicious?: boolean;
+  contentType?: string;
+  audioType?: string;
+  videoType?: string;
+  name?: string;
+  mimeType?: string;
+  fileSize?: number;
+  spriteUrl?: Buffer;
+  spriteUrl2x?: Buffer;
+  width?: number;
+  height?: number;
+  previewWidth?: number;
+  previewHeight?: number;
+  largePreviewUrl?: string;
+  largePreviewWidth?: number;
+  largePreviewHeight?: number;
+  caption?: string;
+  frameCount?: number;
+  frameRate?: number;
+  framesPerRow?: number;
+  framesPerCol?: number;
+  spriteURI?: Buffer;
+  spriteURI2x?: Buffer;
+  thumbnailUrl?: string;
+  previewUrl?: string;
+  duration?: number;
+  isVoiceMail?: number;
+  source?: string;
+  playable?: boolean;
+  playableUrl?: string;
+  properties?: any;
+  facebookUrl?: string;
+  target?: any;
+  styleList?: any;
+  subattachments?: IAttachment[];
+}

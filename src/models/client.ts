@@ -2,14 +2,28 @@ import { EventEmitter } from 'events';
 import { existsSync, readFileSync, writeFileSync } from 'fs';
 import fbLogin from 'facebook-chat-api';
 
-import { ICredentials } from '../interfaces';
+import { ICredentials, IMessage, IOptions } from '../interfaces';
 
 export declare interface Client { }
 
 export class Client extends EventEmitter {
-  private api: any;
+  private _api: any;
 
   private loggedIn = false;
+
+  private options: IOptions;
+
+  constructor(options?: IOptions) {
+    super();
+
+    if (options) {
+      this.options = options;
+    }
+  }
+
+  public setOptions(options: IOptions) {
+    this.options = { ...this.options, ...options };
+  }
 
   public login(credentials: ICredentials) {
     this.loggedIn = false;
@@ -28,11 +42,19 @@ export class Client extends EventEmitter {
           writeFileSync(appStatePath, JSON.stringify(api.getAppState()), 'utf8');
         }
 
-        this.api = api;
+        this._api = api;
         this.loggedIn = true;
+
+        api.listen(this._onMessage);
 
         resolve();
       });
     });
+  }
+
+  private _onMessage = (err: Error, message: IMessage) => {
+    if (err) throw err;
+
+    console.log(message);
   }
 }
