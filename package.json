@@ -1,0 +1,40 @@
+{
+  "name": "fb-chat-api-plus",
+  "version": "1.0.0",
+  "description": "An API wrapper around facebook-chat-api with promises.",
+  "keywords": [
+    "nodejs",
+    "typescript",
+    "facebook",
+    "bot",
+    "chat",
+    "api"
+  ],
+  "author": {
+    "name": "Mikołaj Palkiewicz",
+    "email": "xnerhu@gmail.com"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xnerhu/fb-chat-api-plus.git"
+  },
+  "homepage": "https://github.com/xnerhu/fb-chat-api-plus#readme",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "npm run clean && tsc",
+    "prepublishOnly": "npm run build",
+    "clean": "rimraf ./build"
+  },
+  "devDependencies": {
+    "@types/node": "12.7.3",
+    "rimraf": "3.0.0",
+    "tslint-config-airbnb": "5.11.1",
+    "typescript": "3.6.2"
+  },
+  "dependencies": {
+    "facebook-chat-api": "^1.6.1"
+  }
+}
