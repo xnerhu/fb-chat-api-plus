@@ -2,7 +2,7 @@ import { EventEmitter } from 'events';
 import { existsSync, readFileSync, writeFileSync, ReadStream } from 'fs';
 import fbLogin from 'facebook-chat-api';
 
-import { ICredentials, IMessage, IOptions } from '../interfaces';
+import { ICredentials, IMessage, IOptions, IProfile } from '../interfaces';
 
 export declare interface Client {
   on(event: 'message', listener: (message: IMessage) => void): this;
@@ -172,6 +172,15 @@ export class Client extends EventEmitter {
 
   public getEmojiUrl(emoji: string, size: 32 | 64 | 128, pixelRatio: 1 | 1.5): string {
     return this._api.getEmojiUrl(emoji, size, pixelRatio);
+  }
+
+  public getFriendsList(): Promise<IProfile> {
+    return new Promise((resolve, reject) => {
+      this._api.getFriendsList((err, list) => {
+        if (err) reject(err);
+        resolve(list);
+      });
+    });
   }
 
   private _onMessage = (err: Error, message: IMessage) => {
