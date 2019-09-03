@@ -63,6 +63,15 @@ export class Client extends EventEmitter {
     });
   }
 
+  public changeAdminStatus(threadId: string, adminIDs: string | string[], adminStatus: boolean): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this._api.changeAdminStatus(threadId, adminIDs, adminStatus, (err) => {
+        if (err) reject(err);
+        resolve();
+      });
+    });
+  }
+
   private _onMessage = (err: Error, message: IMessage) => {
     if (err) return console.error(err);
     this.emit('message', message);
