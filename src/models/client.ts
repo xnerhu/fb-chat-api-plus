@@ -27,7 +27,7 @@ export class Client extends EventEmitter {
     this.options = { ...this.options, ...options };
   }
 
-  public login(credentials: ICredentials) {
+  public login(credentials: ICredentials): Promise<void> {
     this.loggedIn = false;
 
     const { appState, appStatePath } = credentials;
@@ -49,6 +49,15 @@ export class Client extends EventEmitter {
 
         api.listen(this._onMessage);
 
+        resolve();
+      });
+    });
+  }
+
+  public addUserToGroup(userId: string, threadId: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this._api.addUserToGroup(userId, threadId, (err) => {
+        if (err) reject(err);
         resolve();
       });
     });
