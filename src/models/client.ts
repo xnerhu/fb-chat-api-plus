@@ -56,16 +56,25 @@ export class Client extends EventEmitter {
 
   public addUserToGroup(userId: string, threadId: string): Promise<void> {
     return new Promise((resolve, reject) => {
-      this._api.addUserToGroup(userId, threadId, (err) => {
+      this._api.addUserToGroup(userId, threadId, err => {
         if (err) reject(err);
         resolve();
       });
     });
   }
 
-  public changeAdminStatus(threadId: string, adminIDs: string | string[], adminStatus: boolean): Promise<void> {
+  public changeAdminStatus(threadId: string, userId: string | string[], adminStatus: boolean): Promise<void> {
     return new Promise((resolve, reject) => {
-      this._api.changeAdminStatus(threadId, adminIDs, adminStatus, (err) => {
+      this._api.changeAdminStatus(threadId, userId, adminStatus, err => {
+        if (err) reject(err);
+        resolve();
+      });
+    });
+  }
+
+  public changeArchivedStatus(threadId: string | string[], archive: boolean): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this._api.changeArchivedStatus(threadId, archive, err => {
         if (err) reject(err);
         resolve();
       });
