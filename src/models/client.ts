@@ -4,12 +4,14 @@ import fbLogin from 'facebook-chat-api';
 
 import { ICredentials, IMessage, IOptions } from '../interfaces';
 
-export declare interface Client { }
+export declare interface Client {
+  on(event: 'message', listener: (message: IMessage) => void): this;
+}
 
 export class Client extends EventEmitter {
   private _api: any;
 
-  private loggedIn = false;
+  public loggedIn = false;
 
   private options: IOptions;
 
@@ -53,8 +55,7 @@ export class Client extends EventEmitter {
   }
 
   private _onMessage = (err: Error, message: IMessage) => {
-    if (err) throw err;
-
-    console.log(message);
+    if (err) return console.error(err);
+    this.emit('message', message);
   }
 }
