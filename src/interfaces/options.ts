@@ -6,4 +6,6 @@ export interface IOptions {
   updatePresence?: boolean;
   forceLogin?: boolean;
   userAgent?: string;
+  actionPrefix?: string;
+  actionsPerPage?: number;
 }

@@ -26,7 +26,7 @@ export class Wrapper extends EventEmitter {
 
   public loggedIn = false;
 
-  private options: IOptions;
+  protected options: IOptions;
 
   constructor(options?: IOptions) {
     super();
@@ -326,11 +326,7 @@ export class Wrapper extends EventEmitter {
   }
 
   public sendTypingIndicator(threadId: string): Function {
-    const callback = this._api.sendTypingIndicator(threadId, err => {
-      if (err) throw err;
-    });
-
-    return callback;
+    return this._api.sendTypingIndicator(threadId);
   }
 
   /**

@@ -6,3 +6,4 @@ export * from './profile';
 export * from './thread';
 export * from './picture';
 export * from './search';
+export * from './action';
