@@ -17,6 +17,13 @@ export class Client extends Wrapper {
       stream = createReadStream(url);
     }
 
-    await this.sendMessage({ attachment: stream }, threadId);
+    const res = await this.sendMessage({ attachment: stream }, threadId);
+    return res;
   }
+
+  public async sendBigEmoji(emoji: string, threadId: string) {
+    const url = await this.getEmojiUrl(emoji, 128, 1.5);
+    await this.sendImage(url, threadId);
+  };
+
 }
