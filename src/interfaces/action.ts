@@ -6,6 +6,7 @@ export interface IAction {
   description?: string;
   hidden?: boolean;
   args?: string[];
+  image?: string;
   argsParser?: (data: IActionData) => IActionArgsResolver | Promise<IActionArgsResolver>;
   onError?: (data: IActionData) => boolean | Promise<boolean>;
   onInvoke?: (data: IActionData) => any | Promise<any>;
@@ -16,6 +17,7 @@ export interface IActionData {
   action?: IAction;
   message?: IMessage;
   client?: Client;
+  threadId?: string;
 }
 
 export interface IActionArgsResolver {

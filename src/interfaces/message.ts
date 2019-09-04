@@ -15,7 +15,7 @@ export interface IMessage {
   attachments?: IAttachment[];
   body?: string;
   isGroup?: boolean;
-  mentions?: { [key: string]: string };
+  mentions?: any;
   messageID?: string;
   senderID?: string;
   threadID?: string;
@@ -38,6 +38,7 @@ export interface IMessage {
   messageReply?: IMessage;
   snippet?: string;
   eventData?: any;
+  url?: string;
   attachment?: ReadStream
 }
 

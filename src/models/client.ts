@@ -48,15 +48,16 @@ export class Client extends Wrapper {
     if (!action) return;
 
     const end = sendTypingIndicator && this.sendTypingIndicator(threadID);
-    const { argsParser, onError } = action;
+    const { argsParser, onError, image } = action;
 
     let args = parsed.args;
-    let error = args && args.length !== action.args.length;
+    let error = action.args && args && args.length < action.args.length;
 
     let data: IActionData = {
       client: this,
       message,
       action,
+      threadId: threadID
     };
 
     if (argsParser) {
@@ -80,6 +81,10 @@ export class Client extends Wrapper {
       }
     } else {
       await action.onInvoke(data)
+    }
+
+    if (image) {
+      await this.sendImage(image, threadID);
     }
 
     if (sendTypingIndicator) end();
