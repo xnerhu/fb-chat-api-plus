@@ -113,6 +113,8 @@ export class Client extends Wrapper {
     let str = `${dash} ⌨️ ${dash}\n\n`;
 
     for (const action of actions) {
+      if (action.hidden) continue;
+
       const name = action.aliases instanceof Array ? action.aliases[0] : action.aliases;
       const description = action.description ? ` - ${action.description}` : '';
 
