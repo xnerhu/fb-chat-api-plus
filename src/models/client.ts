@@ -2,7 +2,7 @@ import { EventEmitter } from 'events';
 import { existsSync, readFileSync, writeFileSync, ReadStream } from 'fs';
 import fbLogin from 'facebook-chat-api';
 
-import { ICredentials, IMessage, IOptions, IProfile } from '../interfaces';
+import { ICredentials, IMessage, IOptions, IProfile, IThread, IFolderType, IPicture, ISearchRes, IUserInfoRes } from '../interfaces';
 
 export declare interface Client {
   on(event: 'message', listener: (message: IMessage) => void): this;
@@ -174,11 +174,65 @@ export class Client extends EventEmitter {
     return this._api.getEmojiUrl(emoji, size, pixelRatio);
   }
 
-  public getFriendsList(): Promise<IProfile> {
+  public getFriendsList(): Promise<IProfile[]> {
     return new Promise((resolve, reject) => {
       this._api.getFriendsList((err, list) => {
         if (err) reject(err);
         resolve(list);
+      });
+    });
+  }
+
+  public getThreadHistory(threadId: string, amount = 20, timestamp?: number): Promise<IMessage[]> {
+    return new Promise((resolve, reject) => {
+      this._api.getThreadHistory(threadId, amount, timestamp, (err, list) => {
+        if (err) reject(err);
+        resolve(list);
+      });
+    });
+  }
+
+  public getThreadInfo(threadId: string): Promise<IThread> {
+    return new Promise((resolve, reject) => {
+      this._api.getThreadInfo(threadId, (err, info) => {
+        if (err) reject(err);
+        resolve(info);
+      });
+    });
+  }
+
+  public getThreadList(limit: number, timestamp: string, tags: IFolderType[] = []): Promise<IThread[]> {
+    return new Promise((resolve, reject) => {
+      this._api.getThreadInfo(limit, timestamp, tags, (err, list) => {
+        if (err) reject(err);
+        resolve(list);
+      });
+    });
+  }
+
+  public getThreadPictures(threadId: string, offset = 0, limit = 1): Promise<IPicture[]> {
+    return new Promise((resolve, reject) => {
+      this._api.getThreadPictures(threadId, offset, limit, (err, list) => {
+        if (err) reject(err);
+        resolve(list);
+      });
+    });
+  }
+
+  public getUserID(name: string): Promise<ISearchRes[]> {
+    return new Promise((resolve, reject) => {
+      this._api.getUserID(name, (err, list) => {
+        if (err) reject(err);
+        resolve(list);
+      });
+    });
+  }
+
+  public getUserInfo(id: string | string[]): Promise<IUserInfoRes> {
+    return new Promise((resolve, reject) => {
+      this._api.getUserInfo(id, (err, data) => {
+        if (err) reject(err);
+        resolve(data);
       });
     });
   }

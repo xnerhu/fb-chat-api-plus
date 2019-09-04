@@ -1,7 +1,10 @@
 import { IAttachment } from './attachment';
 
 export type IMessageType = 'message' | 'event' | 'typ' | 'read' | 'read_receipt' | 'message_reaction' | 'presence' | 'message_unsend' | 'message_reply';
+
 export type ILogMessageType = 'log:subscribe' | 'log:unsubscribe' | 'log:thread-name' | 'log:thread-color' | 'log:thread-icon' | 'log:user-nickname';
+
+export type IFolderType = 'INBOX' | 'ARCHIVED' | 'PENDING' | 'OTHER' | 'unread';
 
 export interface IMessage {
   type?: IMessageType;
@@ -29,4 +32,6 @@ export interface IMessage {
   statuses?: number;
   deletionTimestamp?: string;
   messageReply?: IMessage;
+  snippet?: string;
+  eventData?: any;
 }

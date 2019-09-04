@@ -6,8 +6,9 @@ export interface IProfile {
   isFriend?: boolean;
   fullName?: string;
   profilePicture?: string;
-  type?: string;
+  type?: 'user' | 'group' | 'page' | 'event' | 'app';
   profileUrl?: string;
   vanity?: string;
   isBirthday?: boolean;
+  thumbSrc?: string;
 }
