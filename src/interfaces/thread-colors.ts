@@ -1,0 +1,17 @@
+export enum IThreadColor {
+  messengerBlue = '',
+  viking = '#44bec7',
+  goldenPoppy = '#ffc300',
+  radicalRed = '#fa3c4c',
+  shocking = '#d696bb',
+  pictonBlue = '#6699cc',
+  freeSpeechGreen = '#13cf13',
+  pumpkin = '#ff7e29',
+  lightCoral = '#e68585',
+  mediumSlateBlue = '#7646ff',
+  deepSkyBlue = '#20cef5',
+  fern = '#67b868',
+  cameo = '#d4a88c',
+  brilliantRose = '#ff5ca1',
+  bilobaFlower = '#a695c7',
+}

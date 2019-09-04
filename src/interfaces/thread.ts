@@ -29,3 +29,7 @@ export interface IThread {
   color?: string;
   adminIDs?: { id: string }[];
 }
+
+export interface ISetTitleRes {
+  threadId?: string;
+}

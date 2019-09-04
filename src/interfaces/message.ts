@@ -1,3 +1,5 @@
+import { ReadStream } from 'fs';
+
 import { IAttachment } from './attachment';
 
 export type IMessageType = 'message' | 'event' | 'typ' | 'read' | 'read_receipt' | 'message_reaction' | 'presence' | 'message_unsend' | 'message_reply';
@@ -5,6 +7,8 @@ export type IMessageType = 'message' | 'event' | 'typ' | 'read' | 'read_receipt'
 export type ILogMessageType = 'log:subscribe' | 'log:unsubscribe' | 'log:thread-name' | 'log:thread-color' | 'log:thread-icon' | 'log:user-nickname';
 
 export type IFolderType = 'INBOX' | 'ARCHIVED' | 'PENDING' | 'OTHER' | 'unread';
+
+export type IReaction = ':love:' | ':haha:' | ':wow:' | ':cry:' | ':angry:' | ':like:' | ':dislike:';
 
 export interface IMessage {
   type?: IMessageType;
@@ -34,4 +38,11 @@ export interface IMessage {
   messageReply?: IMessage;
   snippet?: string;
   eventData?: any;
+  attachment?: ReadStream
+}
+
+export interface ISendMessageRes {
+  threadId?: string;
+  messageId?: string;
+  timestamp?: number;
 }

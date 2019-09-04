@@ -2,7 +2,20 @@ import { EventEmitter } from 'events';
 import { existsSync, readFileSync, writeFileSync, ReadStream } from 'fs';
 import fbLogin from 'facebook-chat-api';
 
-import { ICredentials, IMessage, IOptions, IProfile, IThread, IFolderType, IPicture, ISearchRes, IUserInfoRes } from '../interfaces';
+import {
+  ICredentials,
+  IMessage,
+  IOptions,
+  IProfile,
+  IThread,
+  IFolderType,
+  IPicture,
+  ISearchRes,
+  IUserInfoRes,
+  ISendMessageRes,
+  IReaction,
+  ISetTitleRes
+} from '../interfaces';
 
 export declare interface Client {
   on(event: 'message', listener: (message: IMessage) => void): this;
@@ -23,8 +36,8 @@ export class Client extends EventEmitter {
     }
   }
 
-  public setOptions(options: IOptions) {
-    this.options = { ...this.options, ...options };
+  public setOptions(options: IOptions, merge = true) {
+    this.options = merge ? { ...this.options, ...options } : options;
   }
 
   public login(credentials: ICredentials): Promise<void> {
@@ -201,9 +214,9 @@ export class Client extends EventEmitter {
     });
   }
 
-  public getThreadList(limit: number, timestamp: string, tags: IFolderType[] = []): Promise<IThread[]> {
+  public getThreadList(limit = 10, timestamp: string = null, tags: IFolderType[] = []): Promise<IThread[]> {
     return new Promise((resolve, reject) => {
-      this._api.getThreadInfo(limit, timestamp, tags, (err, list) => {
+      this._api.getThreadList(limit, timestamp, tags, (err, list) => {
         if (err) reject(err);
         resolve(list);
       });
@@ -233,6 +246,119 @@ export class Client extends EventEmitter {
       this._api.getUserInfo(id, (err, data) => {
         if (err) reject(err);
         resolve(data);
+      });
+    });
+  }
+
+  public handleMessageRequest(threadId: string | string[], accept: boolean): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this._api.handleMessageRequest(threadId, accept, err => {
+        if (err) reject(err);
+        resolve();
+      });
+    });
+  }
+
+  public logout(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this._api.logout(err => {
+        if (err) reject(err);
+        resolve();
+      });
+    });
+  }
+
+  public markAsRead(threadId: string, mark = true): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this._api.markAsRead(threadId, mark, err => {
+        if (err) reject(err);
+        resolve();
+      });
+    });
+  }
+
+  public markAsReadAll(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this._api.markAsReadAll(err => {
+        if (err) reject(err);
+        resolve();
+      });
+    });
+  }
+
+  /**
+   * @param muteSeconds Use `0` to unmute, `1` to mute indefinitely.
+   */
+  public muteThread(threadId: string, muteSeconds: number): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this._api.muteThread(threadId, muteSeconds, err => {
+        if (err) reject(err);
+        resolve();
+      });
+    });
+  }
+
+  public removeUserFromGroup(userId: string, threadId: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this._api.removeUserFromGroup(userId, threadId, err => {
+        if (err) reject(err);
+        resolve();
+      });
+    });
+  }
+
+  public resolvePhotoUrl(photoId: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      this._api.resolvePhotoUrl(photoId, (err, url) => {
+        if (err) reject(err);
+        resolve(url);
+      });
+    });
+  }
+
+  public sendMessage(message: IMessage, threadId: string | string[], messageId?: string): Promise<ISendMessageRes> {
+    return new Promise((resolve, reject) => {
+      this._api.sendMessage(message, threadId, (err, info) => {
+        if (err) reject(err);
+        resolve(info);
+      }, messageId);
+    });
+  }
+
+  public sendTypingIndicator(threadId: string): Function {
+    const callback = this._api.sendTypingIndicator(threadId, err => {
+      if (err) throw err;
+    });
+
+    return callback;
+  }
+
+  /**
+   * @param reaction If `null`, it will remove a reaction.
+   */
+  public setMessageReaction(messageId: string, reaction?: IReaction): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this._api.setMessageReaction(reaction || '', messageId, (err, url) => {
+        if (err) reject(err);
+        resolve(url);
+      });
+    });
+  }
+
+  public setTitle(newTitle: string, threadId: string): Promise<ISetTitleRes> {
+    return new Promise((resolve, reject) => {
+      this._api.setTitle(newTitle, threadId, (err, data) => {
+        if (err) reject(err);
+        resolve(data);
+      });
+    });
+  }
+
+  public unsendMessage(messageId: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this._api.unsendMessage(messageId, err => {
+        if (err) reject(err);
+        resolve();
       });
     });
   }
