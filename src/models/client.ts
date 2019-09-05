@@ -44,6 +44,7 @@ export class Client extends Wrapper {
     const { body, threadID } = message;
     const { actionPrefix } = this.options;
     const parsed = parseRawText(body, actionPrefix);
+    if (!parsed) return;
     const action = this.getAction(parsed.name);
     if (!action) return;
 
@@ -79,7 +80,7 @@ export class Client extends Wrapper {
       if (!cancel) {
         await this.sendMissingArgs(action, args, threadID);
       }
-    } else {
+    } else if (action.onInvoke) {
       await action.onInvoke(data)
     }
 
@@ -104,7 +105,7 @@ export class Client extends Wrapper {
     const { actionPrefix, actionsPerPage } = this.options;
     const pages = Math.ceil(this.actions.length / actionsPerPage);
     const start = page * actionsPerPage;
-    const actions = this.actions.slice(start, start + actionsPerPage);
+    const actions = this.actions.filter(r => !r.hidden).slice(start, start + actionsPerPage);
     if (!actions.length) return null;
 
     const footer = `---------------- 📄 (${page + 1}/${pages}) ----------------`;
