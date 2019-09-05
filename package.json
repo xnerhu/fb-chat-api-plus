@@ -1,6 +1,6 @@
 {
   "name": "fb-chat-api-plus",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "An API wrapper around facebook-chat-api with promises and commands support.",
   "keywords": [
     "nodejs",
