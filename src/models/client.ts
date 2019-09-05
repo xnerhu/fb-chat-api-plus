@@ -102,10 +102,8 @@ export class Client extends Wrapper {
 
   public async sendHelp(data: IMessage, page = 0) {
     const { threadID } = data;
-    const { actionPrefix, actionsPerPage } = this.options;
-    const pages = Math.ceil(this.actions.length / actionsPerPage);
-    const start = page * actionsPerPage;
-    const actions = this.actions.filter(r => !r.hidden).slice(start, start + actionsPerPage);
+    const { actionPrefix } = this.options;
+    const { actions, pages } = this.getPage(page);
     if (!actions.length) return null;
 
     const footer = `---------------- 📄 (${page + 1}/${pages}) ----------------`;
@@ -138,5 +136,18 @@ export class Client extends Wrapper {
     const str = `Missing arguments:\n⚠️ ${list.join('\n⚠️ ')}`;
 
     return await this.sendMessage({ body: str }, threadId);
+  }
+
+  protected getPage(index: number) {
+    const { actionsPerPage } = this.options;
+    const start = index * actionsPerPage;
+    const actions = this.actions.filter(r => !r.hidden);
+    const list = actions.slice(start, start + actionsPerPage);
+    const pages = Math.ceil(actions.length / actionsPerPage);
+
+    return {
+      actions: list || [],
+      pages,
+    };
   }
 }
