@@ -135,11 +135,11 @@ export class Client extends Wrapper {
 
     if (deleteInterval >= 0) {
       setTimeout(() => {
-        const exists = this.messages.find(r => r === res);
+        const exists = this.messages.indexOf(res) !== -1;
 
         if (exists) {
           this.unsendMessage(res.messageID);
-          this.messages = this.messages.filter(r => r !== r);
+          this.messages = this.messages.filter(r => r !== res);
         }
       }, deleteInterval);
     }
