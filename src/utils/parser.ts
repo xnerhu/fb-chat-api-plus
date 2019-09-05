@@ -21,5 +21,7 @@ export const parseRawText = (text: string, prefix: string) => {
     }
   }
 
+  if (!name) return null;
+
   return { name: name.toLowerCase(), args };
 };
