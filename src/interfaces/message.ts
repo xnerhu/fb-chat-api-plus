@@ -43,7 +43,7 @@ export interface IMessage {
 }
 
 export interface ISendMessageRes {
-  threadId?: string;
-  messageId?: string;
+  threadID?: string;
+  messageID?: string;
   timestamp?: number;
 }

@@ -19,6 +19,7 @@ import {
 
 export declare interface Wrapper {
   on(event: 'message', listener: (message: IMessage) => void): this;
+  on(event: 'send-message', listener: (message: ISendMessageRes) => void): this;
 }
 
 export class Wrapper extends EventEmitter {
@@ -316,10 +317,11 @@ export class Wrapper extends EventEmitter {
     });
   }
 
-  public sendMessage(message: IMessage, threadId: string | string[], messageId?: string): Promise<ISendMessageRes> {
+  public sendMessage(message: IMessage, threadId: string | string[], messageId = ''): Promise<ISendMessageRes> {
     return new Promise((resolve, reject) => {
       this._api.sendMessage(message, threadId, (err, info) => {
         if (err) reject(err);
+        this.emit('send-message', info);
         resolve(info);
       }, messageId);
     });

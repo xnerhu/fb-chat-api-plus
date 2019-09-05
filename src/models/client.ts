@@ -1,12 +1,14 @@
 import { ReadStream, createReadStream } from 'fs';
 import axios from 'axios';
 
-import { IOptions, IMessage, IAction, IActionData } from '../interfaces';
+import { IOptions, IMessage, IAction, IActionData, ISendMessageRes } from '../interfaces';
 import { parseRawText } from '../utils';
 import { Wrapper } from './wrapper';
 
 export class Client extends Wrapper {
   public actions: IAction[] = [];
+
+  private messages: ISendMessageRes[] = [];
 
   constructor(options?: IOptions, actions: IAction[] = []) {
     super({
@@ -17,6 +19,7 @@ export class Client extends Wrapper {
 
     this.actions = actions;
     this.addListener('message', this.onMessage);
+    this.addListener('send-message', this.onSendMessage);
   }
 
   public async sendImage(url: string, threadId: string) {
@@ -100,7 +103,7 @@ export class Client extends Wrapper {
     });
   }
 
-  public async sendHelp(data: IMessage, page = 0) {
+  public async sendHelp(data: IMessage, page = 0, deleteInterval = -1) {
     const { threadID } = data;
     const { actionPrefix } = this.options;
     const { actions, pages } = this.getPage(page);
@@ -128,7 +131,22 @@ export class Client extends Wrapper {
 
     str += footer;
 
-    return await this.sendMessage({ body: str }, threadID);
+    const res = await this.sendMessage({ body: str }, threadID);
+
+    if (deleteInterval >= 0) {
+      setTimeout(() => {
+        const exists = this.messages.find(r => r === res);
+
+        if (exists) {
+          this.unsendMessage(res.messageID);
+          this.messages = this.messages.filter(r => r !== r);
+        }
+      }, deleteInterval);
+    }
+
+    this.messages.push(res);
+
+    return res;
   }
 
   public async sendMissingArgs(action: IAction, args: string[], threadId: string) {
@@ -149,5 +167,19 @@ export class Client extends Wrapper {
       actions: list || [],
       pages,
     };
+  }
+
+  protected onSendMessage(data: ISendMessageRes) {
+    this.messages.push(data);
+  }
+
+  public async cleanMessages(threadId: string) {
+    for (const item of this.messages) {
+      if (item.threadID === threadId) {
+        await this.unsendMessage(item.messageID);
+      }
+    }
+
+    this.messages = this.messages.filter(r => r.threadID !== threadId);
   }
 }
