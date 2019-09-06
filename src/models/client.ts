@@ -109,6 +109,10 @@ export class Client extends Wrapper {
     const { actions, pages } = this.getPage(page);
     if (!actions.length) return null;
 
+    if (page < 0) {
+      page = 0;
+    }
+
     const footer = `---------------- 📄 (${page + 1}/${pages}) ----------------`;
     const dash = '-'.repeat(Math.floor((footer.length - 3) / 2));
 
@@ -157,16 +161,17 @@ export class Client extends Wrapper {
   }
 
   protected getPage(index: number) {
+    if (index < 0) {
+      return { actions: this.actions, pages: 1 };
+    }
+
     const { actionsPerPage } = this.options;
     const start = index * actionsPerPage;
     const actions = this.actions.filter(r => !r.hidden);
     const list = actions.slice(start, start + actionsPerPage);
     const pages = Math.ceil(actions.length / actionsPerPage);
 
-    return {
-      actions: list || [],
-      pages,
-    };
+    return { actions: list || [], pages };
   }
 
   protected onSendMessage(data: ISendMessageRes) {
