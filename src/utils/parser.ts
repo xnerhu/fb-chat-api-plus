@@ -6,7 +6,7 @@ export const parseActionName = (text: string, prefix: string) => {
   for (let i = prefix.length; i < text.length; i++) {
     str += text[i];
 
-    if (text[i] === '"' || text[i] === ' ') {
+    if (text[i] === '"' || text[i] === ' ' || text[i] === '\n') {
       return str.slice(0, -1);
     } else if (i === text.length - 1) {
       return str;
