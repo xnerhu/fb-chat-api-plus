@@ -18,7 +18,8 @@ export const parseActionName = (text: string, prefix: string) => {
 
 export const parseActionArgs = (text: string, offset: number, argsLength: number) => {
   if (argsLength === 1) {
-    return [text.slice(offset)];
+    const arg = text.slice(offset);
+    return arg !== '' ? [arg] : [];
   }
 
   let args: string[] = [];
