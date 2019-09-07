@@ -180,7 +180,7 @@ export class Client extends Wrapper {
 
   public async cleanMessages(threadId: string) {
     for (const item of this.messages) {
-      if (item.threadID === threadId) {
+      if (item && item.threadID === threadId) {
         await this.unsendMessage(item.messageID);
       }
     }
