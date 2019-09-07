@@ -320,7 +320,7 @@ export class Wrapper extends EventEmitter {
   public sendMessage(message: IMessage, threadId: string | string[], messageId = ''): Promise<ISendMessageRes> {
     return new Promise((resolve, reject) => {
       this._api.sendMessage(message, threadId, (err, info) => {
-        if (err) reject(err);
+        if (err) return reject(err);
         this.emit('send-message', info);
         resolve(info);
       }, messageId);
