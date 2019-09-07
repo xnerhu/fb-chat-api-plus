@@ -16,7 +16,7 @@ export interface IActionData {
   args?: string[];
   action?: IAction;
   message?: IMessage;
-  client?: Client;
+  context?: Client;
   threadId?: string;
 }
 

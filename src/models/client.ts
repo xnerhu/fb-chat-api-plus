@@ -2,7 +2,7 @@ import { ReadStream, createReadStream } from 'fs';
 import axios from 'axios';
 
 import { IOptions, IMessage, IAction, IActionData, ISendMessageRes } from '../interfaces';
-import { parseRawText } from '../utils';
+import { parseActionName, parseActionArgs } from '../utils';
 import { Wrapper } from './wrapper';
 
 export class Client extends Wrapper {
@@ -46,55 +46,67 @@ export class Client extends Wrapper {
   protected onMessage = async (message: IMessage, sendTypingIndicator = true) => {
     const { body, threadID } = message;
     const { actionPrefix } = this.options;
-    const parsed = parseRawText(body, actionPrefix);
-    if (!parsed) return;
-    const action = this.getAction(parsed.name);
-    if (!action) return;
 
-    const end = sendTypingIndicator && this.sendTypingIndicator(threadID);
+    const actionName = parseActionName(body, actionPrefix);
+    const action = this.getAction(actionName);
+
+    if (action) {
+      const end = sendTypingIndicator && this.sendTypingIndicator(threadID);
+      const offset = actionPrefix.length + actionName.length;
+
+      await this.handleAction(action, message, offset + 1);
+
+      if (sendTypingIndicator) end();
+    }
+  }
+
+  protected async handleAction(action: IAction, message: IMessage, offset: number) {
+    const { body, threadID } = message;
     const { argsParser, onError, image } = action;
 
-    let args = parsed.args;
-    let error = action.args && args && args.length < action.args.length;
-
+    let error = false;
     let data: IActionData = {
-      client: this,
+      context: this,
       message,
       action,
       threadId: threadID
     };
 
-    if (argsParser) {
-      const res = await argsParser({ args, ...data });
+    if (action.args) {
+      let args = parseActionArgs(body, offset, action.args.length);
 
-      error = res.error != null ? res.error : error;
-      args = res.args;
+      error = args && args.length < action.args.length;
+
+      if (argsParser) {
+        const res = await argsParser({ args, ...data });
+
+        error = res.error != null ? res.error : error;
+        args = res.args;
+      }
+
+      data = { args, ...data };
+
+      if (error) {
+        const cancel = onError && await onError(data);
+
+        if (!cancel) {
+          await this.sendMissingArgs(action, args, threadID);
+        }
+      }
     }
 
-    data = { args, ...data };
-
-    if (error) {
-      let cancel = false;
-
-      if (onError) {
-        cancel = await onError(data);
-      }
-
-      if (!cancel) {
-        await this.sendMissingArgs(action, args, threadID);
-      }
-    } else if (action.onInvoke) {
+    if (!error && action.onInvoke) {
       await action.onInvoke(data)
     }
 
     if (image) {
       await this.sendImage(image, threadID);
     }
-
-    if (sendTypingIndicator) end();
   }
 
   protected getAction(name: string) {
+    if (!name) return null;
+
     return this.actions.find(({ aliases }) => {
       if (aliases instanceof Array) {
         return aliases.indexOf(name) !== -1;
@@ -185,6 +197,6 @@ export class Client extends Wrapper {
       }
     }
 
-    this.messages = this.messages.filter(r => r.threadID !== threadId);
+    this.messages = this.messages.filter(r => r && r.threadID !== threadId);
   }
 }
